@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.container = void 0;
+const inversify_1 = require("inversify");
+const AuthService_1 = require("../services/AuthService");
+const TaskService_1 = require("../services/TaskService");
+const UserRepository_1 = require("../repositories/UserRepository");
+const TaskRepository_1 = require("../repositories/TaskRepository");
+const container = new inversify_1.Container();
+exports.container = container;
+container.bind("AuthService").to(AuthService_1.AuthService);
+container.bind("UserRepository").to(UserRepository_1.UserRepository);
+container.bind("TaskService").to(TaskService_1.TaskService);
+container.bind("TaskRepository").to(TaskRepository_1.TaskRepository);

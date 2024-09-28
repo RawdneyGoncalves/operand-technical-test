@@ -1,0 +1,29 @@
+
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: #ff385c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.read-the-docs {
+  color: #888;
+}

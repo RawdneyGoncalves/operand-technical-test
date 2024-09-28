@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const inversify_config_1 = require("../inversify/inversify.config");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const router = (0, express_1.Router)();
+const taskController = inversify_config_1.container.get("TaskController");
+router.post("/", authMiddleware_1.authMiddleware, (req, res) => taskController.create(req, res));
+router.get("/", authMiddleware_1.authMiddleware, (req, res) => taskController.getAll(req, res));
+router.put("/:id", authMiddleware_1.authMiddleware, (req, res) => taskController.update(req, res));
+router.delete("/:id", authMiddleware_1.authMiddleware, (req, res) => taskController.delete(req, res));
+exports.default = router;
