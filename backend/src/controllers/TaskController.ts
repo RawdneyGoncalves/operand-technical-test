@@ -3,6 +3,7 @@ import { ITaskService } from '../interfaces/ITaskService';
 import { Task } from '../models/Task';
 import { inject, injectable } from 'inversify';
 import TYPES from '../types/types';
+import { v7 as uuidv7 } from 'uuid';
 
 @injectable()
 export class TaskController {
@@ -13,7 +14,7 @@ export class TaskController {
     const userId = req.userId ?? "defaultUserId";
 
     const newTask: Task = {
-      id: '', // Gerar UUID se necessário
+      id: uuidv7(),
       title,
       description,
       status,
