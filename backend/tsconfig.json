@@ -9,5 +9,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    "custom.d.ts"
+  ]
 }

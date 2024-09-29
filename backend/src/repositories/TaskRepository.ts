@@ -1,8 +1,8 @@
 import { ITaskRepository } from '../interfaces/ITaskRepository';
 import { Task } from '../models/Task';
-import { firestore } from '../config/firebase';
 import { v4 as uuidv4 } from 'uuid';
-
+import { Firestore } from '@google-cloud/firestore'; 
+const firestore = new Firestore();
 export class TaskRepository implements ITaskRepository {
   async createTask(userId: string, task: Task): Promise<Task> {
     const newTask = { ...task, id: uuidv4(), createdAt: new Date() };

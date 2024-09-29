@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestore } from '../config/firebase';
+import { firestore } from '../config/firebaseAdmin';
 
 export const taskAccessControl = async (req: Request, res: Response, next: NextFunction) => {
   const { taskId } = req.params;
