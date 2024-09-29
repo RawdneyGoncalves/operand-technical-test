@@ -1,14 +1,15 @@
-import { Router } from "express";
-import { TaskController } from "../controllers/TaskController";
-import { container } from "../inversify/inversify.config";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import { Router } from 'express';
+import { taskController } from '../controllers/taskController';
+import { authMiddleware } from '../middlewares/authMiddleware';
+import { taskAccessControl } from '../middlewares/roleMiddleware';
 
 const router = Router();
-const taskController = container.get<TaskController>("TaskController");
 
-router.post("/", authMiddleware, (req, res) => taskController.create(req, res));
-router.get("/", authMiddleware, (req, res) => taskController.getAll(req, res));
-router.put("/:id", authMiddleware, (req, res) => taskController.update(req, res));
-router.delete("/:id", authMiddleware, (req, res) => taskController.delete(req, res));
+router.use(authMiddleware);
+
+router.post('/', taskController.createTask);
+router.get('/', taskController.getTasks);
+router.put('/:taskId', taskAccessControl, taskController.updateTask);
+router.delete('/:taskId', taskAccessControl, taskController.deleteTask);
 
 export default router;

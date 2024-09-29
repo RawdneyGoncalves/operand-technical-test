@@ -1,17 +1,25 @@
-import { Request, Response, NextFunction } from "express";
-import * as jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
+import { auth, firestore } from '../config/firebase';
 
-export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  const token = req.headers.authorization?.split("Bearer ")[1];
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
-    return res.status(401).json({ message: "Access denied. No token provided." });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key") as { userId: string };
-    req.userId = decoded.userId;
+    const decodedToken = await auth.verifyIdToken(token);
+    req.userId = decodedToken.uid;
+
+    const userDoc = await firestore.collection('users').doc(decodedToken.uid).get();
+    const user = userDoc.data();
+    
+    if (user) {
+      req.role = user.role;
+    }
+
     next();
-  } catch (err) {
-    return res.status(401).json({ message: "Invalid token." });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
   }
-}
+};

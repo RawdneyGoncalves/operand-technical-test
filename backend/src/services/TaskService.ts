@@ -1,38 +1,28 @@
-import { injectable, inject } from 'inversify';
 import { ITaskService } from '../interfaces/ITaskService';
 import { ITaskRepository } from '../interfaces/ITaskRepository';
-import { IUserRepository } from '../interfaces/IUserRepository';
 import { Task } from '../models/Task';
-import TYPES from '../types/types';
-
-
+import { injectable, inject } from 'inversify';
+import { TYPES } from '../inversify/types';
 
 @injectable()
 export class TaskService implements ITaskService {
-    private taskRepository: ITaskRepository;
-    private userRepository: IUserRepository;
+  constructor(
+    @inject(TYPES.ITaskRepository) private taskRepository: ITaskRepository
+  ) {}
 
-    constructor(
-        @inject(TYPES.ITaskRepository) taskRepository: ITaskRepository,
-        @inject(TYPES.IUserRepository) userRepository: IUserRepository
-    ) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-    }
+  createTask(userId: string, task: Task): Promise<Task> {
+    return this.taskRepository.createTask(userId, task);
+  }
 
-    async createTask(userId: string, taskData: Omit<Task, 'id'>): Promise<Task> {
-        return this.taskRepository.create(taskData);
-    }
+  getTasksByUser(userId: string): Promise<Task[]> {
+    return this.taskRepository.getTasksByUser(userId);
+  }
 
-    async getTasksByUser(userId: string): Promise<Task[]> {
-        return this.taskRepository.findByUserId(userId);
-    }
+  updateTask(userId: string, taskId: string, task: Task): Promise<Task> {
+    return this.taskRepository.updateTask(userId, taskId, task);
+  }
 
-    async updateTask(id: string, taskData: Partial<Task>): Promise<Task | null> {
-        return this.taskRepository.update(id, taskData);
-    }
-
-    async deleteTask(id: string): Promise<boolean> {
-        return this.taskRepository.delete(id);
-    }
+  deleteTask(userId: string, taskId: string): Promise<void> {
+    return this.taskRepository.deleteTask(userId, taskId);
+  }
 }

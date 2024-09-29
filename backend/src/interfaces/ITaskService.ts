@@ -1,8 +1,8 @@
-import { Task } from "../models/Task";
+import { Task } from '../models/Task';
 
 export interface ITaskService {
-  createTask(userId: string, taskData: Omit<Task, 'id'>): Promise<Task>;
+  createTask(userId: string, task: Task): Promise<Task>;
   getTasksByUser(userId: string): Promise<Task[]>;
-  updateTask(id: string, taskData: Partial<Task>): Promise<Task | null>;
-  deleteTask(id: string): Promise<boolean>;
+  updateTask(userId: string, taskId: string, task: Task): Promise<Task>;
+  deleteTask(userId: string, taskId: string): Promise<void>;
 }

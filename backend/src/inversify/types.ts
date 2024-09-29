@@ -1,7 +1,4 @@
 export const TYPES = {
-    AuthService: Symbol.for("AuthService"),
-    TaskService: Symbol.for("TaskService"),
-    UserRepository: Symbol.for("UserRepository"),
-    TaskRepository: Symbol.for("TaskRepository"),
-  };
-  
+  ITaskRepository: Symbol.for('ITaskRepository'),
+  ITaskService: Symbol.for('ITaskService'),
+};
