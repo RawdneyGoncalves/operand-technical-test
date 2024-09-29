@@ -1,5 +1,12 @@
 import { createStore } from 'vuex';
-import { registerUser, loginUser, getTasksByUser, createTask, deleteTask, updateTask } from '../apiService';
+import { 
+  registerUser, 
+  loginUser, 
+  getTasksByUser, 
+  createTask, 
+  deleteTask, 
+  updateTask 
+} from '../services/apiService'; 
 
 const store = createStore({
   state: {
