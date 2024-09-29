@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ITaskService } from '../interfaces/ITaskService';
 
-class TaskController {
+export class TaskController {
   constructor(private taskService: ITaskService) {}
 
   async createTask(req: Request, res: Response) {
@@ -12,7 +12,7 @@ class TaskController {
       const newTask = await this.taskService.createTask(userId, { title, description, status });
       res.status(201).json(newTask);
     } catch (error) {
-      res.status(400).json({ error: error });
+      res.status(400).json({ error: error.message });
     }
   }
 
@@ -22,7 +22,7 @@ class TaskController {
       const tasks = await this.taskService.getTasksByUser(userId);
       res.status(200).json(tasks);
     } catch (error) {
-      res.status(400).json({ error: error });
+      res.status(400).json({ error: error.message });
     }
   }
 
@@ -35,7 +35,7 @@ class TaskController {
       const updatedTask = await this.taskService.updateTask(userId, taskId, task);
       res.status(200).json(updatedTask);
     } catch (error) {
-      res.status(400).json({ error: error });
+      res.status(400).json({ error: error.message });
     }
   }
 
@@ -47,7 +47,7 @@ class TaskController {
       await this.taskService.deleteTask(userId, taskId);
       res.status(204).send();
     } catch (error) {
-      res.status(400).json({ error: error });
+      res.status(400).json({ error: error.message });
     }
   }
 }

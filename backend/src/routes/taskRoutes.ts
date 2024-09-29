@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { taskController } from '../controllers/taskController';
+import { taskController } from '../controllers/TaskController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { taskAccessControl } from '../middlewares/roleMiddleware';
 

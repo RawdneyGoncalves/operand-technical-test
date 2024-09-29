@@ -12,13 +12,13 @@ export class TaskRepository implements ITaskRepository {
 
   async getTasksByUser(userId: string): Promise<Task[]> {
     const snapshot = await firestore.collection('tasks').where('userId', '==', userId).get();
-    return snapshot.docs.map(doc => doc.data() as Task);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task));
   }
 
-  async updateTask(userId: string, taskId: string, task: Task): Promise<Task> {
+  async updateTask(userId: string, taskId: string, task: Partial<Task>): Promise<Task> {
     await firestore.collection('tasks').doc(taskId).update(task);
-    const updatedTask = await firestore.collection('tasks').doc(taskId).get();
-    return updatedTask.data() as Task;
+    const updatedDoc = await firestore.collection('tasks').doc(taskId).get();
+    return { id: taskId, ...updatedDoc.data() } as Task;
   }
 
   async deleteTask(userId: string, taskId: string): Promise<void> {

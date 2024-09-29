@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../config/firebase'; 
 
-class AuthController {
+export class AuthController {
   async register(req: Request, res: Response) {
     const { email, password } = req.body;
 

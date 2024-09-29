@@ -1,18 +1,15 @@
-FROM node:18
 
+FROM node:14
 
-WORKDIR /usr/src/app
-
+WORKDIR /app
 
 COPY package*.json ./
-COPY tsconfig.json ./
-COPY . .
-
 
 RUN npm install
 
+COPY . .
 
 EXPOSE 8080
 
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "serve"]
