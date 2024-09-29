@@ -41,31 +41,45 @@ export default defineComponent({
 
 <style scoped>
 form {
-  max-width: 300px;
+  max-width: 400px;
   margin: 50px auto;
   padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
   background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+h2 {
+  text-align: center;
+  color: #ff385c;
+  margin-bottom: 1rem;
 }
 
 input {
   width: 100%;
   margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: border 0.3s;
+}
+
+input:focus {
+  border-color: #ff385c;
+  outline: none;
 }
 
 button {
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   background-color: #ff385c;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -77,5 +91,10 @@ p {
   cursor: pointer;
   color: #007a87;
   margin-top: 1rem;
+  transition: color 0.3s;
+}
+
+p:hover {
+  color: #ff385c;
 }
 </style>

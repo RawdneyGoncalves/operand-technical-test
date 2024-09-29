@@ -41,13 +41,7 @@ export default defineComponent({
       this.$store.commit('updateTask', updatedTask);
     },
     addTask() {
-      const newTask: Task = {
-        id: Date.now().toString(),
-        title: 'New Task',
-        description: 'Description of the task',
-        status: 'pending',
-        createdAt: new Date(),
-      };
+      const newTask = { title: 'New Task', description: 'Task description', status: 'pending' };
       this.$store.commit('addTask', newTask);
     },
   },
@@ -57,29 +51,28 @@ export default defineComponent({
 <style scoped>
 .task-list {
   max-width: 600px;
-  margin: 50px auto;
-  padding: 1rem;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
   text-align: center;
-  color: #333;
-}
-
-ul {
-  padding: 0;
+  color: #ff385c;
 }
 
 button {
+  display: block;
+  width: 100%;
+  padding: 10px;
   background-color: #ff385c;
   color: white;
   border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  display: block;
-  margin: 1rem auto 0;
-  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 10px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
