@@ -1,9 +1,10 @@
+import { injectable } from 'inversify';
 import { auth as clientAuth } from '../config/firebase'; 
 import { auth as adminAuth } from '../config/firebaseAdmin'; 
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'; 
 import { IAuthService } from '../interfaces/IAuthService';
 import { User } from '../models/User';
-
+@injectable()
 export class AuthService implements IAuthService {
   async register(userData: Omit<User, "id">): Promise<User> {
     const { email, password } = userData;
