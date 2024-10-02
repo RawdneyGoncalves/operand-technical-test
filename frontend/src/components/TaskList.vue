@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue';
 import TaskItem from './TaskItem.vue';
 
+// Definindo a interface Task
 interface Task {
   id: string;
   title: string;
@@ -30,7 +31,7 @@ export default defineComponent({
   components: { TaskItem },
   computed: {
     tasks(): Task[] {
-      return this.$store.state.tasks;
+      return this.$store.state.tasks as Task[]; // Cast para Task[]
     },
   },
   methods: {
@@ -41,7 +42,13 @@ export default defineComponent({
       this.$store.commit('updateTask', updatedTask);
     },
     addTask() {
-      const newTask = { title: 'New Task', description: 'Task description', status: 'pending' };
+      const newTask: Task = {
+        id: Date.now().toString(), // Gerar ID único
+        title: 'New Task',
+        description: 'Task description',
+        status: 'pending',
+        createdAt: new Date(),
+      };
       this.$store.commit('addTask', newTask);
     },
   },

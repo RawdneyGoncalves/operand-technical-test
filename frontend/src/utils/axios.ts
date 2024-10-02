@@ -1,13 +1,15 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:3000';
+
 const instance = axios.create({
-  baseURL: '/api', // Proxy definido no vite.config.ts
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Adicionar interceptor para incluir token nas requisições
+
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

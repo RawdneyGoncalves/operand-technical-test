@@ -25,11 +25,15 @@ export default defineComponent({
     };
   },
   methods: {
-    handleSubmit() {
-      if (this.isLogin) {
-        this.$store.dispatch('login', { email: this.email, password: this.password });
-      } else {
-        this.$store.dispatch('register', { email: this.email, password: this.password });
+    async handleSubmit() {
+      try {
+        if (this.isLogin) {
+          await this.$store.dispatch('login', { email: this.email, password: this.password });
+        } else {
+          await this.$store.dispatch('register', { email: this.email, password: this.password });
+        }
+      } catch (error) {
+        console.error('Operation failed:', error);
       }
     },
     toggleForm() {
