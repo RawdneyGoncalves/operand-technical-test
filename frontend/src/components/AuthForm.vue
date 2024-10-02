@@ -31,16 +31,18 @@ export default defineComponent({
       this.errorMessage = '';
       try {
         if (this.isLogin) {
-          const user = await this.$store.dispatch('login', { email: this.email, password: this.password });
+          const { user } = await this.$store.dispatch('login', { email: this.email, password: this.password });
           alert(`Login successful! Welcome, ${user.email}`);
+          this.$router.push('/dashboard');
         } else {
           await this.$store.dispatch('register', { email: this.email, password: this.password });
           alert('Registration successful! You can now login.');
+          this.$router.push('/login');
         }
         this.email = '';
         this.password = '';
       } catch (error: any) {
-        this.errorMessage = 'Operation failed: ' + error.message;
+        this.errorMessage = 'Operation failed: ' + (error.response?.data?.error || error.message);
         alert(this.errorMessage);
       }
     },
