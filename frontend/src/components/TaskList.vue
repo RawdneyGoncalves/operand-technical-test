@@ -1,88 +1,59 @@
 <template>
-  <div class="task-list">
-    <h2>Your Tasks</h2>
+  <div>
+    <h1>Lista de Tarefas</h1>
+    <form @submit.prevent="addTask">
+      <input v-model="newTaskTitle" placeholder="Título da tarefa" />
+      <input v-model="newTaskDescription" placeholder="Descrição da tarefa" />
+      <button type="submit">Adicionar Tarefa</button>
+    </form>
     <ul>
-      <TaskItem
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        @remove="removeTask"
-        @update="updateTask"
-      />
+      <li v-for="task in tasks" :key="task.id">
+        {{ task.title }} - {{ task.description }}
+        <button @click="deleteTask(task.id)">Excluir</button>
+      </li>
     </ul>
-    <button @click="addTask">Add Task</button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import TaskItem from './TaskItem.vue';
-
-// Definindo a interface Task
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  createdAt: Date;
-}
+import { defineComponent, ref } from 'vue'; // Importando ref aqui
+import { useStore } from 'vuex';
+import { Task } from '../store/types';
 
 export default defineComponent({
-  components: { TaskItem },
-  computed: {
-    tasks(): Task[] {
-      return this.$store.state.tasks as Task[]; // Cast para Task[]
-    },
-  },
-  methods: {
-    removeTask(taskId: string) {
-      this.$store.commit('removeTask', taskId);
-    },
-    updateTask(updatedTask: Task) {
-      this.$store.commit('updateTask', updatedTask);
-    },
-    addTask() {
-      const newTask: Task = {
-        id: Date.now().toString(), // Gerar ID único
-        title: 'New Task',
-        description: 'Task description',
-        status: 'pending',
-        createdAt: new Date(),
+  setup() {
+    const store = useStore();
+    const newTaskTitle = ref('');
+    const newTaskDescription = ref('');
+
+    const addTask = async () => {
+      const task: Task = {
+        id: 'generated-id', // Substitua isso por um ID gerado pelo servidor
+        title: newTaskTitle.value,
+        description: newTaskDescription.value,
+        completed: false,
+        userId: store.state.user.id, // Certifique-se de que o usuário esteja autenticado
       };
-      this.$store.commit('addTask', newTask);
-    },
+      await store.dispatch('createNewTask', task);
+      newTaskTitle.value = '';
+      newTaskDescription.value = '';
+    };
+
+    const deleteTask = async (taskId: string) => {
+      await store.dispatch('deleteTask', taskId);
+    };
+
+    return {
+      newTaskTitle,
+      newTaskDescription,
+      addTask,
+      deleteTask,
+      tasks: store.state.tasks, // Acesse as tarefas do estado
+    };
   },
 });
 </script>
 
 <style scoped>
-.task-list {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
-  color: #ff385c;
-}
-
-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #ff385c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  margin-top: 10px;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #e03450;
-}
+/* Adicione seus estilos aqui */
 </style>

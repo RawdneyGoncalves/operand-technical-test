@@ -6,8 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 @injectable()
 export class UserRepository implements IUserRepository {
   private users: User[] = [];
+  private loginAttempts: Record<string, { attempts: number; lastAttempt: number }> = {}; 
 
-  async create(user: Omit<User, 'id'>): Promise<User> {
+  async create(user: Omit<User, 'id'> & { password: string }): Promise<User> {
     const newUser: User = { id: uuidv4(), ...user, isAdmin: false }; 
     this.users.push(newUser);
     return newUser;
@@ -29,5 +30,23 @@ export class UserRepository implements IUserRepository {
 
     this.users[userIndex] = { ...this.users[userIndex], ...userData };
     return this.users[userIndex];
-}
+  }
+
+  public async registerLoginAttempt(email: string): Promise<string | null> {
+    const now = Date.now();
+    const attemptData = this.loginAttempts[email] || { attempts: 0, lastAttempt: 0 };
+
+    if (now - attemptData.lastAttempt < 60000) {
+      if (attemptData.attempts >= 5) {
+        return 'Blocked';
+      }
+      attemptData.attempts += 1;
+    } else {
+      attemptData.attempts = 1; 
+    }
+    
+    attemptData.lastAttempt = now;
+    this.loginAttempts[email] = attemptData;
+    return null; 
+  }
 }

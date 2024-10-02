@@ -4,6 +4,7 @@
     <input type="email" v-model="email" placeholder="Email" required />
     <input type="password" v-model="password" placeholder="Password" required />
     <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <p @click="toggleForm">{{ isLogin ? 'Create an account' : 'Already have an account?' }}</p>
   </form>
 </template>
@@ -22,18 +23,25 @@ export default defineComponent({
     return {
       email: '',
       password: '',
+      errorMessage: '',
     };
   },
   methods: {
     async handleSubmit() {
+      this.errorMessage = '';
       try {
         if (this.isLogin) {
-          await this.$store.dispatch('login', { email: this.email, password: this.password });
+          const user = await this.$store.dispatch('login', { email: this.email, password: this.password });
+          alert(`Login successful! Welcome, ${user.email}`);
         } else {
           await this.$store.dispatch('register', { email: this.email, password: this.password });
+          alert('Registration successful! You can now login.');
         }
-      } catch (error) {
-        console.error('Operation failed:', error);
+        this.email = '';
+        this.password = '';
+      } catch (error: any) {
+        this.errorMessage = 'Operation failed: ' + error.message;
+        alert(this.errorMessage);
       }
     },
     toggleForm() {
@@ -44,61 +52,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-form {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 2rem;
-  border: 1px solid #ebebeb;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-h2 {
+.error {
+  color: red;
   text-align: center;
-  color: #ff385c;
-  margin-bottom: 1rem;
-}
-
-input {
-  width: 100%;
-  margin: 10px 0;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: border 0.3s;
-}
-
-input:focus {
-  border-color: #ff385c;
-  outline: none;
-}
-
-button {
-  width: 100%;
-  padding: 15px;
-  background-color: #ff385c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #e03450;
-}
-
-p {
-  text-align: center;
-  cursor: pointer;
-  color: #007a87;
-  margin-top: 1rem;
-  transition: color 0.3s;
-}
-
-p:hover {
-  color: #ff385c;
+  margin-top: 10px;
 }
 </style>
