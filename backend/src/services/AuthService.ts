@@ -12,7 +12,7 @@ export class AuthService implements IAuthService {
     try {
       const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
       return { id: userCredential.user.uid, email: userCredential.user.email!, password, role: 'user' };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering user:', error);
       throw new Error('Failed to register user');
     }
@@ -26,13 +26,16 @@ export class AuthService implements IAuthService {
         user: {
           id: userCredential.user.uid,
           email: userCredential.user.email!,
-          password: '',
+          password: '', 
           role: 'user',
         },
         token,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error logging in user:', error);
+      if (error.code) {
+        throw { code: error.code };
+      }
       throw new Error('Invalid email or password');
     }
   }
@@ -40,7 +43,7 @@ export class AuthService implements IAuthService {
   async resetPassword(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(clientAuth, email);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending password reset email:', error);
       throw new Error('Failed to send password reset email');
     }
