@@ -23,6 +23,7 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import TaskItem from './TaskItem.vue';
 import { Task } from '../store/types';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   name: 'TaskList',
@@ -58,29 +59,65 @@ export default defineComponent({
     };
 
     const removeTask = async (taskId: string) => {
-      const confirmed = confirm('Tem certeza de que deseja remover esta tarefa?');
-      if (confirmed) {
+      const confirmed = await Swal.fire({
+        title: 'Tem certeza?',
+        text: "Você não poderá reverter isso!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: 'Sim, remova!',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#333',
+      });
+
+      if (confirmed.isConfirmed) {
         try {
           await store.dispatch('deleteTask', taskId);
-          alert('Tarefa removida com sucesso');
+          Swal.fire('Removido!', 'A tarefa foi removida.', 'success');
         } catch (error) {
           console.error('Falha ao remover tarefa:', error);
-          alert('Falha ao remover tarefa');
+          Swal.fire('Erro!', 'Falha ao remover tarefa', 'error');
         }
       }
     };
 
     const updateTask = async (updatedTask: Task) => {
+      const taskData: Partial<Task> = {
+        ...updatedTask,
+      };
+
       const newTitle = prompt('Digite o novo título:', updatedTask.title);
       if (newTitle) {
-        const taskData: Partial<Task> = { ...updatedTask, title: newTitle };
-        try {
-          await store.dispatch('updateTask', { taskId: updatedTask.id, taskData });
-          alert('Tarefa atualizada com sucesso');
-        } catch (error) {
-          console.error('Falha ao atualizar tarefa:', error);
-          alert('Falha ao atualizar tarefa');
-        }
+        taskData.title = newTitle;
+      }
+
+      // Alterando a maneira de atualizar o status
+      const newStatus = await Swal.fire({
+        title: 'Selecione o novo status:',
+        input: 'select',
+        inputOptions: {
+          pending: 'Pendente',
+          completed: 'Completo',
+          'in-progress': 'Em Progresso',
+        },
+        inputPlaceholder: 'Selecione o status',
+        showCancelButton: true,
+      }).then((result) => {
+        return result.value;
+      });
+
+      if (newStatus) {
+        taskData.status = newStatus;
+      }
+
+      try {
+        await store.dispatch('updateTask', { taskId: updatedTask.id, taskData });
+        alert('Tarefa atualizada com sucesso');
+      } catch (error) {
+        console.error('Falha ao atualizar tarefa:', error);
+        alert('Falha ao atualizar tarefa');
       }
     };
 

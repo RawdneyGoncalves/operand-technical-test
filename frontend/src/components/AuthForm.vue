@@ -33,23 +33,23 @@ export default defineComponent({
   },
   methods: {
     async handleSubmit() {
-      this.errorMessage = '';
-      try {
-        if (this.isLogin) {
-          await this.$store.dispatch('login', { email: this.email, password: this.password });
-          alert(`Login bem-sucedido! Bem-vindo, ${this.$store.state.user?.email}`);
-          this.$router.push('/dashboard');
-        } else {
-          await this.$store.dispatch('register', { email: this.email, password: this.password });
-          alert('Registro bem-sucedido! Agora você pode fazer login.');
-          this.$router.push('/login');
-        }
-        this.email = '';
-        this.password = '';
-      } catch (error: any) {
-        this.errorMessage = 'Operação falhou: ' + (error.response?.data?.error || error.message);
-      }
-    },
+  this.errorMessage = '';
+  try {
+    if (this.isLogin) {
+      await this.$store.dispatch('login', { email: this.email, password: this.password });
+      alert(`Login bem-sucedido! Bem-vindo, ${this.$store.state.user?.email}`);
+      this.$router.push('/dashboard'); 
+      this.email = '';
+      this.password = '';
+    } else {
+      await this.$store.dispatch('register', { email: this.email, password: this.password });
+      alert('Registro bem-sucedido! Agora você pode fazer login.');
+      this.$router.push('/login');
+    }
+  } catch (error: any) {
+    this.errorMessage = 'Operação falhou: ' + (error.response?.data?.error || error.message);
+  }
+},
     toggleForm() {
       this.$emit('toggle');
     },
