@@ -31,37 +31,52 @@ export class TaskController {
   }
 
   async getTasks(req: Request, res: Response) {
-    const userId = req.userId ?? "defaultUserId";
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
     try {
       const tasks = await this.taskService.getTasksByUser(userId);
       res.status(200).json(tasks);
-    } catch (error) {
-      res.status(400).json({ error: error });
+    } catch (error: any) {
+      console.error('Error getting tasks:', error);
+      res.status(500).json({ error: error.message || 'Error fetching tasks' });
     }
   }
 
   async updateTask(req: Request, res: Response) {
     const { taskId } = req.params;
     const task = req.body;
-    const userId = req.userId ?? "defaultUserId";
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
 
     try {
       const updatedTask = await this.taskService.updateTask(userId, taskId, task);
       res.status(200).json(updatedTask);
-    } catch (error) {
-      res.status(400).json({ error: error });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message || 'Error updating task' });
     }
   }
 
   async deleteTask(req: Request, res: Response) {
     const { taskId } = req.params;
-    const userId = req.userId ?? "defaultUserId";
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
 
     try {
       await this.taskService.deleteTask(userId, taskId);
-      res.status(204).send();
-    } catch (error) {
-      res.status(400).json({ error: error });
+      res.status(204).json({ message: 'Tarefa excluída com sucesso' });
+    } catch (error: any) {
+      console.error('Error deleting task:', error);
+      res.status(500).json({ error: error.message || 'Error deleting task' });
     }
   }
 }

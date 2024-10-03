@@ -18,10 +18,10 @@ export class TaskService implements ITaskService {
     return this.taskRepository.getTasksByUser(userId);
   }
 
-  updateTask(userId: string, taskId: string, task: Task): Promise<Task> {
+  updateTask(userId: string, taskId: string, task: Partial<Task>): Promise<Task> {
     return this.taskRepository.updateTask(userId, taskId, task);
   }
-
+  
   deleteTask(userId: string, taskId: string): Promise<void> {
     return this.taskRepository.deleteTask(userId, taskId);
   }
