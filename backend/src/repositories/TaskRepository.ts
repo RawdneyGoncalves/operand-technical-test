@@ -2,8 +2,8 @@ import { injectable } from 'inversify';
 import { ITaskRepository } from '../interfaces/ITaskRepository';
 import { Task } from '../models/Task';
 import { v4 as uuidv4 } from 'uuid';
-import { Firestore } from '@google-cloud/firestore'; 
-const firestore = new Firestore();
+import { firestore } from '../config/firebaseAdmin';
+
 @injectable()
 export class TaskRepository implements ITaskRepository {
   async createTask(userId: string, task: Task): Promise<Task> {

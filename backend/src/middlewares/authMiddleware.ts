@@ -2,9 +2,16 @@ import { Request, Response, NextFunction } from 'express';
 import { auth, firestore } from '../config/firebaseAdmin';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        console.error('Authorization header missing');
+        return res.status(401).json({ error: 'Unauthorized: Authorization header missing' });
+    }
+
+    const token = authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        console.error('Token missing in Authorization header');
+        return res.status(401).json({ error: 'Unauthorized: Token missing' });
     }
 
     try {
@@ -19,7 +26,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         }
 
         next();
-    } catch (error) {
-        res.status(401).json({ error: 'Invalid token' });
+    } catch (error: any) {
+        console.error('Error verifying token:', error);
+        res.status(401).json({ error: 'Invalid token', details: error.message });
     }
 };

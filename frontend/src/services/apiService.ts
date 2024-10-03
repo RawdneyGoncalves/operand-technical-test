@@ -1,36 +1,28 @@
 import axiosInstance from '../utils/axios';
-import { User, Task } from '../store/types';
+import Cookies from 'js-cookie';
+import { User } from '../store/types';
 
-
-export const loginUser = async (email: string, password: string): Promise<{ user: User; token: string }> => {
+export const registerUser = async (userData: { email: string; password: string; role: string }): Promise<void> => {
   try {
-    const response = await axiosInstance.post('/login', { email, password });
-    return response.data;
+    await axiosInstance.post('/register', userData);
   } catch (error: any) {
-    console.error('Login error:', error.response ? error.response.data : error.message);
+    console.error('Registration error:', error.response ? error.response.data : error.message);
     throw error; 
   }
 };
 
+export const loginUser = async (email: string, password: string): Promise<{ user: User; token: string }> => {
+  try {
+    const response = await axiosInstance.post('/auth/login', { email, password });
 
-export const getTasksByUser = async (userId: string): Promise<Task[]> => {
-  const response = await axiosInstance.get(`/users/${userId}/tasks`);
-  return response.data; 
-};
+    if (!response.data.user || !response.data.token) {
+      throw new Error('Login response is missing user or token');
+    }
 
-
-export const createTask = async (task: Task): Promise<Task> => {
-  const response = await axiosInstance.post('/tasks', task);
-  return response.data; 
-};
-
-
-export const deleteTask = async (taskId: string): Promise<void> => {
-  await axiosInstance.delete(`/tasks/${taskId}`);
-};
-
-
-export const updateTask = async (taskId: string, taskData: Partial<Task>): Promise<Task> => {
-  const response = await axiosInstance.put(`/tasks/${taskId}`, taskData);
-  return response.data;
+    Cookies.set('token', response.data.token); 
+    return response.data; 
+  } catch (error: any) {
+    console.error('Login error:', error.response ? error.response.data : error.message);
+    throw error; 
+  }
 };

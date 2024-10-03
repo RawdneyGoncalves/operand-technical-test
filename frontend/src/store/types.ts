@@ -9,11 +9,11 @@ export interface Task {
   title: string;
   description?: string; 
   completed: boolean;
-  userId: string; 
+  userId: string;
 }
 
 export interface State {
   user: User | null;
+  token: string | null;
   tasks: Task[];
-  token: string | null; 
 }

@@ -1,91 +1,57 @@
 import { createStore } from 'vuex';
 import { State, User, Task } from './types';
-import { 
-  loginUser, 
-  getTasksByUser, 
-  createTask, 
-  deleteTask as apiDeleteTask,
-  updateTask
-} from '../services/apiService'; 
+import { loginUser } from '../services/apiService'; 
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Home from '../components/Home.vue';
+import Login from '../views/Login.vue';
+import Register from '@/views/Register.vue';
+import Dashboard from '@/views/Dashboard.vue';
+
+const routes: Array<RouteRecordRaw> = [
+  { path: '/', component: Home },
+  { path: '/login', component: Login },
+  { path: '/register', component: Register },
+  {
+    path: '/dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true },
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
 
 const store = createStore<State>({
   state: {
     user: null,
-    tasks: [] as Task[],
     token: localStorage.getItem('token') || null,
+    tasks: [] as Task[]
   },
   mutations: {
     setUser(state, { user, token }: { user: User; token: string }) {
       state.user = user;
-      state.token = token; 
+      state.token = token;
       localStorage.setItem('token', token); 
-    },
-    addTask(state, task: Task) {
-      state.tasks.push(task);
-    },
-    removeTask(state, taskId: string) {
-      state.tasks = state.tasks.filter(task => task.id !== taskId);
-    },
-    setTasks(state, tasks: Task[]) {
-      state.tasks = tasks;
-    },
-    updateTask(state, updatedTask: Task) {
-      const index = state.tasks.findIndex(task => task.id === updatedTask.id);
-      if (index !== -1) {
-        state.tasks.splice(index, 1, updatedTask);
-      }
     },
   },
   actions: {
     async login({ commit }, { email, password }: { email: string; password: string }) {
       try {
-        const { user, token } = await loginUser(email, password);
-        commit('setUser', { ...user, token });
+        const response = await loginUser(email, password);
+        console.log('Login response:', response);
+        if (!response || !response.user || !response.token) {
+          throw new Error('Login failed: Missing user or token');
+        }
+        commit('setUser', { user: response?.user, token: response?.token });
+        router.push('/create-task');
       } catch (error: any) {
         console.error('Login failed:', error);
-        throw error;
-      }
-    },
-    async createNewTask({ commit, dispatch }, task: Task) {
-      try {
-        const createdTask = await createTask(task);
-        commit('addTask', createdTask);
-        if (task.userId) {
-          await dispatch('fetchTasks', task.userId);
-        }
-      } catch (error: any) {
-        console.error('Failed to create task:', error);
-        throw error;
-      }
-    },
-    async deleteTask({ commit }, taskId: string) {
-      try {
-        await apiDeleteTask(taskId);
-        commit('removeTask', taskId);
-      } catch (error: any) {
-        console.error('Failed to delete task:', error);
-        throw error;
-      }
-    },
-    async fetchTasks({ commit }, userId: string) {
-      try {
-        const tasks = await getTasksByUser(userId);
-        commit('setTasks', tasks);
-      } catch (error: any) {
-        console.error('Failed to fetch tasks:', error);
-        throw error;
-      }
-    },
-    async updateTask({ commit }, { taskId, taskData }: { taskId: string; taskData: Partial<Task> }) {
-      try {
-        const updatedTask = await updateTask(taskId, taskData);
-        commit('updateTask', updatedTask);
-      } catch (error: any) {
-        console.error('Failed to update task:', error);
         throw error;
       }
     },
   },
 });
 
-export { store };
+export { store, router };
