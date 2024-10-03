@@ -58,6 +58,18 @@ git clone https://github.com/RawdneyGoncalves/operand-technical-test
 cd operand-technical-test
 ```
 
+
+### obs: antes de tudo, vá no link do google drive e atribua as credenciais para o backend
+
+## vá em backend/src/config e adicione esses dois arquivos que foram baixados do google drive: 
+```bash
+stellar-arcadia-332916-firebase-adminsdk-tz6kz-f3ec67a494.json
+```
+```bash
+stellar-arcadia-332916-firebase-adminsdk-tz6kz-f3ec67a494.json:Zone.Identifier
+```
+## depois de adicionado esses dois arquivos, adicione a .env na raiz do backend, (eu disponibilizei minha env no google drive)
+
 ### Construir as imagens Docker:
 
 ```bash
