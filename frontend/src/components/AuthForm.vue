@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import BaseButton from './BaseButton.vue';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   name: 'AuthForm',
@@ -33,23 +34,28 @@ export default defineComponent({
   },
   methods: {
     async handleSubmit() {
-  this.errorMessage = '';
-  try {
-    if (this.isLogin) {
-      await this.$store.dispatch('login', { email: this.email, password: this.password });
-      alert(`Login bem-sucedido! Bem-vindo, ${this.$store.state.user?.email}`);
-      this.$router.push('/dashboard'); 
-      this.email = '';
-      this.password = '';
-    } else {
-      await this.$store.dispatch('register', { email: this.email, password: this.password });
-      alert('Registro bem-sucedido! Agora você pode fazer login.');
-      this.$router.push('/login');
-    }
-  } catch (error: any) {
-    this.errorMessage = 'Operação falhou: ' + (error.response?.data?.error || error.message);
-  }
-},
+      this.errorMessage = '';
+      try {
+        if (this.isLogin) {
+          await this.$store.dispatch('login', { email: this.email, password: this.password });
+          Swal.fire({
+            title: 'Login bem-sucedido!',
+            text: `Bem-vindo, ${this.$store.state.user?.email}`,
+            icon: 'success',
+            confirmButtonText: 'Ok',
+          });
+          this.$router.push('/dashboard');
+          this.email = '';
+          this.password = '';
+        } else {
+          await this.$store.dispatch('register', { email: this.email, password: this.password });
+          alert('Registro bem-sucedido! Agora você pode fazer login.');
+          this.$router.push('/login');
+        }
+      } catch (error: any) {
+        this.errorMessage = 'Operação falhou: ' + (error.response?.data?.error || error.message);
+      }
+    },
     toggleForm() {
       this.$emit('toggle');
     },
@@ -64,7 +70,12 @@ export default defineComponent({
   padding: 2rem;
   background-color: var(--color-background);
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.auth-form:hover {
+  transform: scale(1.02);
 }
 
 .auth-form h2 {

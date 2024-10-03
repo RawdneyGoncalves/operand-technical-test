@@ -38,8 +38,14 @@ export default defineComponent({
   padding: 20px;
   border-radius: 10px;
   background-color: var(--color-secondary);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s;
 }
+
+.dashboard:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
 
 .dashboard-header {
   display: flex;

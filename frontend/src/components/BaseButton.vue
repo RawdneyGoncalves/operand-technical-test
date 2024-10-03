@@ -28,9 +28,13 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
     font-size: 1rem;
     color: white;
+  }
+  
+  .base-button:hover {
+    transform: scale(1.05);
   }
   
   .primary {

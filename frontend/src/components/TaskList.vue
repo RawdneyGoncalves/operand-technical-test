@@ -7,13 +7,7 @@
       <button type="submit">Adicionar Tarefa</button>
     </form>
     <ul class="tasks">
-      <TaskItem
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        @remove="removeTask"
-        @update="updateTask"
-      />
+      <TaskItem v-for="task in tasks" :key="task.id" :task="task" @remove="removeTask" @update="updateTask" />
     </ul>
   </div>
 </template>
@@ -35,7 +29,14 @@ export default defineComponent({
 
     const addTask = async () => {
       if (!store.state.user) {
-        alert('Usuário não autenticado');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Atenção!',
+          text: 'Usuário não autenticado. Por favor, faça login.',
+          background: '#fff',
+          color: '#333',
+          confirmButtonText: 'OK',
+        });
         return;
       }
 
@@ -51,7 +52,14 @@ export default defineComponent({
         await store.dispatch('createNewTask', task);
         newTaskTitle.value = '';
         newTaskDescription.value = '';
-        alert('Tarefa adicionada com sucesso');
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: 'Tarefa adicionada com sucesso!',
+          background: '#fff',
+          color: '#333',
+          confirmButtonText: 'OK',
+        });
       } catch (error) {
         console.error('Falha ao adicionar tarefa:', error);
         alert('Falha ao adicionar tarefa');
@@ -88,12 +96,27 @@ export default defineComponent({
         ...updatedTask,
       };
 
-      const newTitle = prompt('Digite o novo título:', updatedTask.title);
+      const newTitle = await Swal.fire({
+        title: 'Digite o novo título:',
+        input: 'text',
+        inputValue: updatedTask.title,
+        showCancelButton: true,
+        confirmButtonText: 'Atualizar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#333',
+        inputAttributes: {
+          'aria-label': 'Digite o novo título da tarefa',
+        },
+        customClass: {
+          input: 'swal-input',
+        },
+      }).then((result) => result.value);
+
       if (newTitle) {
         taskData.title = newTitle;
       }
 
-      // Alterando a maneira de atualizar o status
       const newStatus = await Swal.fire({
         title: 'Selecione o novo status:',
         input: 'select',
@@ -104,9 +127,9 @@ export default defineComponent({
         },
         inputPlaceholder: 'Selecione o status',
         showCancelButton: true,
-      }).then((result) => {
-        return result.value;
-      });
+        background: '#fff',
+        color: '#333',
+      }).then((result) => result.value);
 
       if (newStatus) {
         taskData.status = newStatus;
@@ -114,7 +137,14 @@ export default defineComponent({
 
       try {
         await store.dispatch('updateTask', { taskId: updatedTask.id, taskData });
-        alert('Tarefa atualizada com sucesso');
+        Swal.fire({
+          icon: 'success',
+          title: 'Sucesso!',
+          text: 'Tarefa atualizada com sucesso!',
+          background: '#fff',
+          color: '#333',
+          confirmButtonText: 'OK',
+        });
       } catch (error) {
         console.error('Falha ao atualizar tarefa:', error);
         alert('Falha ao atualizar tarefa');
@@ -124,8 +154,7 @@ export default defineComponent({
     const tasks = store.getters.getTasks;
 
     onMounted(() => {
-      // Opcional: Buscar tarefas ao montar o componente
-      // store.dispatch('fetchTasks');
+      store.dispatch('fetchTasks');
     });
 
     return { newTaskTitle, newTaskDescription, addTask, removeTask, updateTask, tasks };
@@ -140,8 +169,14 @@ export default defineComponent({
   padding: 20px;
   background-color: var(--color-secondary);
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
 }
+
+.task-list:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 
 .task-list h2 {
   text-align: center;
@@ -179,5 +214,11 @@ export default defineComponent({
 .tasks {
   list-style-type: none;
   padding: 0;
+}
+
+.swal-input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
