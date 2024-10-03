@@ -1,17 +1,25 @@
-import axiosInstance from '../utils/axios';
-import Cookies from 'js-cookie';
+import axiosInstance from '../utils/axios';  
+import Cookies from 'js-cookie'; 
 import { User } from '../store/types';
 
-export const registerUser = async (userData: { email: string; password: string; role: string }): Promise<void> => {
+interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+
+
+export const registerUser = async (userData: { email: string; password: string; role: string }): Promise<{ user: User }> => {
   try {
-    await axiosInstance.post('/register', userData);
+    const response = await axiosInstance.post('/register', userData);
+    return response.data;
   } catch (error: any) {
-    console.error('Registration error:', error.response ? error.response.data : error.message);
-    throw error; 
+    console.error('Erro no registro:', error.response ? error.response.data : error.message);
+    throw error;
   }
 };
 
-export const loginUser = async (email: string, password: string): Promise<{ user: User; token: string }> => {
+export const loginUser = async (email: string, password: string): Promise<LoginResponse> => {
   try {
     const response = await axiosInstance.post('/auth/login', { email, password });
 
@@ -20,9 +28,9 @@ export const loginUser = async (email: string, password: string): Promise<{ user
     }
 
     Cookies.set('token', response.data.token); 
-    return response.data; 
+    return response.data;
   } catch (error: any) {
-    console.error('Login error:', error.response ? error.response.data : error.message);
-    throw error; 
+    console.error('Erro no login:', error.response ? error.response.data : error.message);
+    throw error;
   }
 };

@@ -1,18 +1,23 @@
 <template>
-  <form @submit.prevent="handleSubmit">
-    <h2>{{ isLogin ? 'Login' : 'Register' }}</h2>
+  <form @submit.prevent="handleSubmit" class="auth-form">
+    <h2>{{ isLogin ? 'Login' : 'Registrar' }}</h2>
     <input type="email" v-model="email" placeholder="Email" required />
-    <input type="password" v-model="password" placeholder="Password" required />
-    <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
+    <input type="password" v-model="password" placeholder="Senha" required />
+    <BaseButton type="submit">{{ isLogin ? 'Login' : 'Registrar' }}</BaseButton>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    <p @click="toggleForm">{{ isLogin ? 'Create an account' : 'Already have an account?' }}</p>
+    <p @click="toggleForm" class="toggle-link">
+      {{ isLogin ? 'Criar uma conta' : 'Já tem uma conta?' }}
+    </p>
   </form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import BaseButton from './BaseButton.vue';
 
 export default defineComponent({
+  name: 'AuthForm',
+  components: { BaseButton },
   props: {
     isLogin: {
       type: Boolean,
@@ -31,19 +36,18 @@ export default defineComponent({
       this.errorMessage = '';
       try {
         if (this.isLogin) {
-          const { user } = await this.$store.dispatch('login', { email: this.email, password: this.password });
-          alert(`Login successful! Welcome, ${user.email}`);
+          await this.$store.dispatch('login', { email: this.email, password: this.password });
+          alert(`Login bem-sucedido! Bem-vindo, ${this.$store.state.user?.email}`);
           this.$router.push('/dashboard');
         } else {
           await this.$store.dispatch('register', { email: this.email, password: this.password });
-          alert('Registration successful! You can now login.');
+          alert('Registro bem-sucedido! Agora você pode fazer login.');
           this.$router.push('/login');
         }
         this.email = '';
         this.password = '';
       } catch (error: any) {
-        this.errorMessage = 'Operation failed: ' + (error.response?.data?.error || error.message);
-        alert(this.errorMessage);
+        this.errorMessage = 'Operação falhou: ' + (error.response?.data?.error || error.message);
       }
     },
     toggleForm() {
@@ -54,9 +58,43 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.error {
-  color: red;
+.auth-form {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  background-color: var(--color-background);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h2 {
   text-align: center;
-  margin-top: 10px;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.error {
+  color: var(--color-error);
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.toggle-link {
+  color: var(--color-primary);
+  cursor: pointer;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.toggle-link:hover {
+  text-decoration: underline;
 }
 </style>

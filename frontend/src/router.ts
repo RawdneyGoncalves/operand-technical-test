@@ -3,7 +3,7 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Dashboard from '@/views/Dashboard.vue';
-import { store } from '@/store';
+import store from './store'; 
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', component: Home },
@@ -23,7 +23,7 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => { 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const isAuthenticated = store.state.user !== null;
+  const isAuthenticated = store.getters.isAuthenticated;
 
   if (requiresAuth && !isAuthenticated) {
     next('/login');

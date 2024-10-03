@@ -1,5 +1,7 @@
 <template>
-  <AuthForm :isLogin="true" @toggle="navigateToRegister" />
+  <div class="login-page">
+    <AuthForm :isLogin="true" @toggle="navigateToRegister" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,6 +10,7 @@ import AuthForm from '../components/AuthForm.vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
+  name: 'Login',
   components: { AuthForm },
   setup() {
     const router = useRouter();
@@ -20,5 +23,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Estilo similar ao AuthForm.vue */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--color-secondary);
+  min-height: 100vh;
+}
 </style>
