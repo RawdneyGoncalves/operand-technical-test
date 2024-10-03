@@ -7,13 +7,20 @@
       <button type="submit">Adicionar Tarefa</button>
     </form>
     <ul class="tasks">
-      <TaskItem v-for="task in tasks" :key="task.id" :task="task" @remove="removeTask" @update="updateTask" />
+      <TaskItem
+        v-for="task in tasks"
+        :key="task.id"
+        :task="task"
+        @remove="removeTask"
+        @update="updateTask"
+      />
+      <li v-if="!tasks.length">Nenhuma tarefa encontrada.</li> <!-- Mensagem quando não há tarefas -->
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import TaskItem from './TaskItem.vue';
 import { Task } from '../store/types';
@@ -26,6 +33,8 @@ export default defineComponent({
     const store = useStore();
     const newTaskTitle = ref('');
     const newTaskDescription = ref('');
+
+    const tasks = computed(() => store.getters.getTasks);
 
     const addTask = async () => {
       if (!store.state.user) {
@@ -41,7 +50,7 @@ export default defineComponent({
       }
 
       const task: Task = {
-        id: '',
+        id: '', 
         title: newTaskTitle.value,
         description: newTaskDescription.value || '',
         status: 'pendente',
@@ -151,8 +160,6 @@ export default defineComponent({
       }
     };
 
-    const tasks = store.getters.getTasks;
-
     onMounted(() => {
       store.dispatch('fetchTasks');
     });
@@ -176,7 +183,6 @@ export default defineComponent({
 .task-list:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
-
 
 .task-list h2 {
   text-align: center;
