@@ -34,3 +34,55 @@ No desenvolvimento do **TaskMaster**, foram aplicados os princípios SOLID, que 
 - **Firestore**: Banco de dados NoSQL utilizado para persistência de dados.
 - **InversifyJS**: Biblioteca para injeção de dependências, seguindo o padrão IoC (Inversion of Control).
 - **Firebase Auth**: Serviço de autenticação para gerenciar usuários de forma segura.
+- **Vue.js**: Framework JavaScript progressivo para a construção da interface do usuário.
+- **Vite**: Ferramenta de build rápida para projetos frontend modernos.
+- **Docker**: Plataforma para desenvolver, enviar e executar aplicações em containers.
+- **Docker Compose**: Ferramenta para definir e gerenciar multi-containers Docker.
+
+## Pré-requisitos
+
+Antes de começar, certifique-se de ter os seguintes requisitos instalados:
+
+- [Node.js](https://nodejs.org/) (versão LTS recomendada)
+- [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/) (opcional, para clonar o repositório)
+
+## Como Rodar o Projeto
+
+### 1. Clonar o Repositório
+
+Primeiro, clone o repositório do projeto para o seu ambiente local:
+
+```bash
+git clone https://github.com/RawdneyGoncalves/operand-technical-test
+cd operand-technical-test
+```
+
+### Construir as imagens Docker:
+
+```bash
+docker-compose build
+```
+
+### Subir os containers:
+
+```bash
+docker-compose up
+```
+
+## Acessar o aplicativo:
+
+### O frontend estará disponível em http://localhost:8080.
+
+### O backend estará disponível em http://localhost:3000.
+
+
+## Observações
+### Dependências: As dependências são gerenciadas automaticamente pelo Docker, portanto não é necessário instalá-las manualmente.
+
+
+### Parar os containers: Para parar os containers em execução, use:
+
+```bash
+docker-compose down
+```
